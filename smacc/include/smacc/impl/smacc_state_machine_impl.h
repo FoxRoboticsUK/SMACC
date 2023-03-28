@@ -374,7 +374,6 @@ namespace smacc
     {
       ROS_INFO("[StateMachine] life-time constrained smacc signal subscription created. Subscriber is %s",
                demangledTypeName<TSmaccObjectType>().c_str());
-
       std::shared_ptr<CallbackCounterSemaphore> callbackCounterSemaphore;
       if(stateCallbackConnections.count(object))
       {
@@ -388,7 +387,6 @@ namespace smacc
 
       connection = binder.bindaux(signal, callback, object, callbackCounterSemaphore);
       callbackCounterSemaphore->addConnection(connection);
-
     }
     else // state life-time objects
     {
@@ -547,6 +545,7 @@ namespace smacc
       try
       {
         sr->onExit();
+        this->disconnectSmaccSignalObject((void*)&sr);
       }
       catch (const std::exception &e)
       {
@@ -562,6 +561,7 @@ namespace smacc
       try
       {
         eg->onExit();
+        this->disconnectSmaccSignalObject((void*)&eg);
       }
       catch (const std::exception &e)
       {
