@@ -255,7 +255,7 @@ void SignalDetector::pollOnce()
   {
     ROS_ERROR("Exception during Signal Detector update loop. %s", ex.what());
   }
-
+  
   smaccStateMachine_->unlockStateMachine("update behaviors");
 }
 
