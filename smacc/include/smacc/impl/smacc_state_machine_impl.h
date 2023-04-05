@@ -8,6 +8,7 @@
 
 #include <smacc/smacc_state_machine.h>
 
+#include <smacc/callback_counter_semaphore.h>
 #include <smacc/smacc_client.h>
 #include <smacc/smacc_orthogonal.h>
 #include <smacc/smacc_state.h>
