@@ -14,7 +14,7 @@ namespace smacc
 {
 class CallbackCounterSemaphore {
 public:
-    CallbackCounterSemaphore(std::string name, int count = 0);
+    CallbackCounterSemaphore(std::string name, int count = 0) : count_(count), name_(name) {}
     bool acquire() 
     {
         std::unique_lock<std::mutex> lock(mutex_);
