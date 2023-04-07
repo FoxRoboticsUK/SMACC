@@ -140,6 +140,10 @@ public:
         return nh_;
     };
 
+    inline ros::NodeHandle getPrivateNode(){
+        return private_nh_;
+    };
+
 
 protected:
     void checkStateMachineConsistence();
