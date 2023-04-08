@@ -8,6 +8,7 @@
 #include <boost/any.hpp>
 #include <map>
 #include <mutex>
+#include <atomic>
 
 #include <smacc/common.h>
 #include <smacc/introspection/introspection.h>
@@ -191,7 +192,7 @@ private:
     std::recursive_mutex m_mutex_;
     std::recursive_mutex eventQueueMutex_;
 
-    StateMachineInternalAction stateMachineCurrentAction;
+    std::atomic<StateMachineInternalAction> stateMachineCurrentAction;
 
     std::map<void*, std::shared_ptr<CallbackCounterSemaphore>> stateCallbackConnections;
 

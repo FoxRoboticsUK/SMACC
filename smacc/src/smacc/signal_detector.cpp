@@ -197,10 +197,7 @@ void SignalDetector::pollOnce()
     }
 
     // STATE UPDATABLE ELEMENTS
-    if (this->smaccStateMachine_->stateMachineCurrentAction != StateMachineInternalAction::TRANSITIONING &&
-        this->smaccStateMachine_->stateMachineCurrentAction != StateMachineInternalAction::STATE_CONFIGURING &&
-        this->smaccStateMachine_->stateMachineCurrentAction != StateMachineInternalAction::STATE_EXITING &&
-        this->smaccStateMachine_->stateMachineCurrentAction != StateMachineInternalAction::STATE_ENTERING)
+    if (this->smaccStateMachine_->stateMachineCurrentAction.load() == StateMachineInternalAction::STATE_STEADY)
     {
 
       // we do not update updatable elements during trasitioning or configuration of states
