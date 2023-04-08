@@ -192,7 +192,7 @@ private:
     std::recursive_mutex m_mutex_;
     std::recursive_mutex eventQueueMutex_;
 
-    StateMachineInternalAction stateMachineCurrentAction;
+    std::atomic<StateMachineInternalAction> stateMachineCurrentAction;
 
     std::map<void*, std::shared_ptr<CallbackCounterSemaphore>> stateCallbackConnections;
 
