@@ -7,7 +7,7 @@
 
 #include <smacc/component.h>
 #include <smacc/smacc_updatable.h>
-
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <geometry_msgs/Pose.h>
 #include <tf/transform_listener.h>
 #include <tf/transform_datatypes.h>
@@ -30,6 +30,10 @@ public:
         return this->pose_.pose;
     }
 
+    inline geometry_msgs::PoseWithCovarianceStamped toPoseWithCovarianceStampedMsg(){
+	    std::lock_guard<std::mutex> guard(m_mutex_);
+	    return this->posewithcovstamped_; 
+    }
     inline geometry_msgs::PoseStamped toPoseStampedMsg()
     {
         std::lock_guard<std::mutex> guard(m_mutex_);
@@ -50,7 +54,7 @@ public:
 
 private:
     geometry_msgs::PoseStamped pose_;
-
+    geometry_msgs::PoseWithCovarianceStamped posewithcovstamped_; 
     static std::shared_ptr<tf::TransformListener> tfListener_;
     static std::mutex listenerMutex_;
 
