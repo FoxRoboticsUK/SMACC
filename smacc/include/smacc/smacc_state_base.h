@@ -460,9 +460,9 @@ namespace smacc
       static_cast<MostDerived *>(this)->onEntry();
 
       // here orthogonals and client behaviors are entered OnEntry
-      if (std::is_same<mpl::list<>, InnerInitial>::value) {
+      // if (std::is_same<mpl::list<>, InnerInitial>::value) {
         this->getStateMachine().notifyOnStateEntryEnd(derivedthis);
-      }
+      // }
     }
   };
 } // namespace smacc

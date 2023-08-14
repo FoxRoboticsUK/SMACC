@@ -65,7 +65,8 @@ class SmaccServiceServerClient : public smacc::ISmaccClient {
       return false;
     }
     res = *response;
-    return *ret_val;
+    return true;
+    // return *ret_val;
   }
   ros::ServiceServer server_;
   bool initialized_;

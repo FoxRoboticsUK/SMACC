@@ -288,7 +288,7 @@ void SignalDetector::pollingLoop()
   else
   {
     ROS_INFO_STREAM("[SignalDetector] running in multi threaded mode");
-    ros::AsyncSpinner spinner(1);
+    ros::AsyncSpinner spinner(0);
     spinner.start();
     ros::waitForShutdown();
   }
