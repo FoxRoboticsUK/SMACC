@@ -15,7 +15,7 @@ namespace smacc
 class CallbackCounterSemaphore {
 public:
     CallbackCounterSemaphore(std::string name, int count = 0) : count_(count), name_(name) {}
-    bool acquire() 
+    bool acquire()
     {
         std::unique_lock<std::mutex> lock(mutex_);
         ROS_DEBUG("[CallbackCounterSemaphore] acquire callback %s %ld",name_.c_str(), (long)this);
@@ -42,7 +42,7 @@ public:
         ROS_DEBUG("[CallbackCounterSemaphore] callback finished %s %ld",name_.c_str(), (long)this);
     }
 
-    void finalize() 
+    void finalize()
     {
         std::unique_lock<std::mutex> lock(mutex_);
 
@@ -60,7 +60,7 @@ public:
         ROS_DEBUG("[CallbackCounterSemaphore] callbacks finalized %s %ld",name_.c_str(), (long)this);
     }
 
-    void addConnection(boost::signals2::connection conn) 
+    void addConnection(boost::signals2::connection conn)
     {
         std::unique_lock<std::mutex> lock(mutex_);
 
