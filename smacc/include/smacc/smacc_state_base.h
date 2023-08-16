@@ -109,7 +109,7 @@ namespace smacc
 
     virtual ISmaccState *getParentState()
     {
-      //auto* ctx = dynamic_cast<ISmaccState*>(this->template context<Context *>());
+      // auto* ctx = dynamic_cast<ISmaccState*>(this->template context<Context *>());
 
       return parentState_;
     }
@@ -175,29 +175,30 @@ namespace smacc
     template <typename TOrthogonal, typename TBehavior>
     static void configure_orthogonal_runtime(std::function<void(TBehavior &bh, MostDerived &)> initializationFunction)
     {
-      configure_orthogonal_internal<TOrthogonal, TBehavior>([=](ISmaccState *state) {
+      configure_orthogonal_internal<TOrthogonal, TBehavior>([=](ISmaccState *state)
+                                                            {
         //auto bh = std::make_shared<TBehavior>(args...);
         auto bh = state->configure<TOrthogonal, TBehavior>();
-        initializationFunction(*bh, *(static_cast<MostDerived *>(state)));
-      });
+        initializationFunction(*bh, *(static_cast<MostDerived *>(state))); });
     }
 
     template <typename TOrthogonal, typename TBehavior>
     static void configure_orthogonal_runtime(std::function<void(TBehavior &bh)> initializationFunction)
     {
-      configure_orthogonal_internal<TOrthogonal, TBehavior>([=](ISmaccState *state) {
+      configure_orthogonal_internal<TOrthogonal, TBehavior>([=](ISmaccState *state)
+                                                            {
         //auto bh = std::make_shared<TBehavior>(args...);
         auto bh = state->configure<TOrthogonal, TBehavior>();
-        initializationFunction(*bh);
-      });
+        initializationFunction(*bh); });
     }
 
     template <typename TOrthogonal, typename TBehavior, typename... Args>
-    static void configure_orthogonal(Args &&... args)
+    static void configure_orthogonal(Args &&...args)
     {
       configure_orthogonal_internal<TOrthogonal, TBehavior>(
-          [=](ISmaccState *state) {
-            //auto bh = std::make_shared<TBehavior>(args...);
+          [=](ISmaccState *state)
+          {
+            // auto bh = std::make_shared<TBehavior>(args...);
             state->configure<TOrthogonal, TBehavior>(args...);
           });
     }
@@ -242,7 +243,8 @@ namespace smacc
       if (!SmaccStateInfo::stateReactorsInfo.count(tindex))
         SmaccStateInfo::stateReactorsInfo[tindex] = std::vector<std::shared_ptr<SmaccStateReactorInfo>>();
 
-      srinfo->factoryFunction = [&, srh, args...](ISmaccState *state) {
+      srinfo->factoryFunction = [&, srh, args...](ISmaccState *state)
+      {
         auto sr = state->createStateReactor<TStateReactor, TOutputEvent, TInputEventList, TArgs...>(args...);
         srh->configureStateReactor(sr);
         sr->initialize(state);
@@ -268,7 +270,8 @@ namespace smacc
       if (!SmaccStateInfo::eventGeneratorsInfo.count(tindex))
         SmaccStateInfo::eventGeneratorsInfo[tindex] = std::vector<std::shared_ptr<SmaccEventGeneratorInfo>>();
 
-      eginfo->factoryFunction = [&, egh, args...](ISmaccState *state) {
+      eginfo->factoryFunction = [&, egh, args...](ISmaccState *state)
+      {
         auto eg = state->createEventGenerator<TEventGenerator>(args...);
         egh->configureEventGenerator(eg);
         eg->initialize(state);
@@ -295,7 +298,8 @@ namespace smacc
       if (!SmaccStateInfo::stateReactorsInfo.count(tindex))
         SmaccStateInfo::stateReactorsInfo[tindex] = std::vector<std::shared_ptr<SmaccStateReactorInfo>>();
 
-      srinfo->factoryFunction = [&, srh, args...](ISmaccState *state) {
+      srinfo->factoryFunction = [&, srh, args...](ISmaccState *state)
+      {
         auto sr = state->createStateReactor<TStateReactor>(args...);
         srh->configureStateReactor(sr);
         sr->initialize(state);
@@ -313,7 +317,7 @@ namespace smacc
       auto condition = boost::bind(conditionFn, thisobject);
       bool conditionResult = condition();
 
-      //ROS_INFO("LOOP EVENT CONDITION: %d", conditionResult);
+      // ROS_INFO("LOOP EVENT CONDITION: %d", conditionResult);
       if (conditionResult)
       {
         this->postEvent<EvLoopContinue<MostDerived>>();
@@ -461,7 +465,7 @@ namespace smacc
 
       // here orthogonals and client behaviors are entered OnEntry
       // if (std::is_same<mpl::list<>, InnerInitial>::value) {
-        this->getStateMachine().notifyOnStateEntryEnd(derivedthis);
+      this->getStateMachine().notifyOnStateEntryEnd(derivedthis);
       // }
     }
   };
