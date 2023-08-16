@@ -15,52 +15,53 @@
 
 namespace cl_move_base_z
 {
-class Pose : public smacc::ISmaccComponent, public smacc::ISmaccUpdatable
-{
-public:
-    Pose(std::string poseFrameName = "base_link", std::string referenceFrame = "odom");
-
-    virtual void update() override;
-
-    void waitTransformUpdate(ros::Rate r = ros::Rate(20));
-
-    inline geometry_msgs::Pose toPoseMsg()
+    class Pose : public smacc::ISmaccComponent, public smacc::ISmaccUpdatable
     {
-        std::lock_guard<std::mutex> guard(m_mutex_);
-        return this->pose_.pose;
-    }
+    public:
+        Pose(std::string poseFrameName = "base_link", std::string referenceFrame = "odom");
 
-    inline geometry_msgs::PoseWithCovarianceStamped toPoseWithCovarianceStampedMsg(){
-	    std::lock_guard<std::mutex> guard(m_mutex_);
-	    return this->posewithcovstamped_; 
-    }
-    inline geometry_msgs::PoseStamped toPoseStampedMsg()
-    {
-        std::lock_guard<std::mutex> guard(m_mutex_);
-        return this->pose_;
-    }
+        virtual void update() override;
 
-    inline const std::string &getReferenceFrame() const
-    {
-        return referenceFrame_;
-    }
+        void waitTransformUpdate(ros::Rate r = ros::Rate(20));
 
-    inline const std::string &getFrameId() const
-    {
-        return poseFrameName_;
-    }
+        inline geometry_msgs::Pose toPoseMsg()
+        {
+            std::lock_guard<std::mutex> guard(m_mutex_);
+            return this->pose_.pose;
+        }
 
-    bool isInitialized;
+        inline geometry_msgs::PoseWithCovarianceStamped toPoseWithCovarianceStampedMsg()
+        {
+            std::lock_guard<std::mutex> guard(m_mutex_);
+            return this->posewithcovstamped_;
+        }
+        inline geometry_msgs::PoseStamped toPoseStampedMsg()
+        {
+            std::lock_guard<std::mutex> guard(m_mutex_);
+            return this->pose_;
+        }
 
-private:
-    geometry_msgs::PoseStamped pose_;
-    geometry_msgs::PoseWithCovarianceStamped posewithcovstamped_; 
-    static std::shared_ptr<tf::TransformListener> tfListener_;
-    static std::mutex listenerMutex_;
+        inline const std::string &getReferenceFrame() const
+        {
+            return referenceFrame_;
+        }
 
-    std::string poseFrameName_;
-    std::string referenceFrame_;
+        inline const std::string &getFrameId() const
+        {
+            return poseFrameName_;
+        }
 
-    std::mutex m_mutex_;
-};
+        bool isInitialized;
+
+    private:
+        geometry_msgs::PoseStamped pose_;
+        geometry_msgs::PoseWithCovarianceStamped posewithcovstamped_;
+        static std::shared_ptr<tf::TransformListener> tfListener_;
+        static std::mutex listenerMutex_;
+
+        std::string poseFrameName_;
+        std::string referenceFrame_;
+
+        std::mutex m_mutex_;
+    };
 } // namespace cl_move_base_z
