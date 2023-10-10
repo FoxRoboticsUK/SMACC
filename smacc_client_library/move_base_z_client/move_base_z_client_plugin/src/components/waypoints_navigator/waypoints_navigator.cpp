@@ -141,7 +141,7 @@ void WaypointNavigator::loadWayPointsFromFile(std::string filepath)
 
     if (wp_node != NULL)
     {
-      for (unsigned int i = 0; i < wp_node->size(); ++i)
+      for (uint64_t i = 0; i < wp_node->size(); ++i)
       {
         // Parse waypoint entries on YAML
         geometry_msgs::Pose wp;
@@ -162,7 +162,7 @@ void WaypointNavigator::loadWayPointsFromFile(std::string filepath)
         }
         catch (...)
         {
-          ROS_ERROR("parsing waypoint file, syntax error in point %d", i);
+          ROS_ERROR("parsing waypoint file, syntax error in point %ld", i);
         }
       }
       ROS_INFO_STREAM("Parsed " << this->waypoints_.size() << " waypoints.");

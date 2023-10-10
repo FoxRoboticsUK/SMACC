@@ -30,7 +30,7 @@
 #include <smacc/smacc_types.h>
 #include <smacc/introspection/introspection.h>
 
-typedef boost::statechart::processor_container<boost::statechart::fifo_scheduler<>, boost::function0<void>, std::allocator<void>>::processor_context my_context;
+typedef boost::statechart::processor_container<boost::statechart::fifo_scheduler<>, boost::function0<void>, std::allocator<boost::statechart::none>>::processor_context my_context;
 namespace smacc
 {
 
@@ -46,8 +46,6 @@ enum class SMRunMode
   RELEASE
 };
 
-template <typename StateMachineType>
-void run();
 } // namespace smacc
 
 #include <smacc/smacc_default_events.h>

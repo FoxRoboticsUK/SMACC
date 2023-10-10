@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.8)
 project(sr_event_countdown)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -123,7 +123,7 @@ include_directories(
    #src/${PROJECT_NAME}/sr_event_countdown.cpp
    src/sr_event_countdown/sr_event_countdown.cpp
  )
- 
+
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

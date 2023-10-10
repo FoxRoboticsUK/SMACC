@@ -31,7 +31,7 @@ namespace cl_move_base_z
         {
         }
 
-        void BackwardLocalPlanner::initialize(std::string name, tf2_ros::Buffer *tf, costmap_2d::Costmap2DROS *costmap_ros)
+        void BackwardLocalPlanner::initialize(std::string /*name*/, tf2_ros::Buffer */*tf*/, costmap_2d::Costmap2DROS *costmap_ros)
         {
             this->costmapRos_ = costmap_ros;
             this->initialize();
@@ -67,7 +67,7 @@ namespace cl_move_base_z
             // we have to do this, for example for the case we are refining the final orientation.
             // se check at some point if the carrot is reached in "goal linear distance", then we go into
             // some automatic pure-spinning mode where we only update the orientation
-            // This means that if we reach the carrot with precission we go into pure spinning mode but we cannot
+            // This means that if we reach the carrot with precision we go into pure spinning mode but we cannot
             // leave that point (maybe this could be improved)
             if (carrot_angular_distance_ < yaw_goal_tolerance_)
             {
@@ -90,7 +90,7 @@ namespace cl_move_base_z
 * initialize()
 ******************************************************************************************************************
 */
-        void BackwardLocalPlanner::initialize(std::string name, tf::TransformListener *tf, costmap_2d::Costmap2DROS *costmap_ros)
+        void BackwardLocalPlanner::initialize(std::string /*name*/, tf::TransformListener */*tf*/, costmap_2d::Costmap2DROS *costmap_ros)
         {
             this->costmapRos_ = costmap_ros;
             this->initialize();
@@ -161,7 +161,7 @@ namespace cl_move_base_z
                 computeCurrentEuclideanAndAngularErrorsToCarrotGoal(tfpose, disterr, angleerr);
             }
 
-            ROS_DEBUG("[BackwardsLocalPlanner] Current index carrot goal: %d", currentCarrotPoseIndex_);
+            ROS_DEBUG("[BackwardsLocalPlanner] Current index carrot goal: %ld", currentCarrotPoseIndex_);
             ROS_DEBUG("[BackwardsLocalPlanner] Update carrot goal: linear error  %lf, angular error: %lf", disterr, angleerr);
             bool carrotInGoalLinear = disterr < xy_goal_tolerance_;
             ROS_DEBUG("[BackwardsLocalPlanner] carrot in goal radius: %d", carrotInGoalLinear);
@@ -212,7 +212,7 @@ namespace cl_move_base_z
         bool BackwardLocalPlanner::checkCarrotHalfPlainConstraint(const tf::Stamped<tf::Pose> &tfpose)
         {
             // this function is specially useful when we want to reach the goal with a lot
-            // of precission. We may pass the goal and then the controller enters in some
+            // of precision. We may pass the goal and then the controller enters in some
             // unstable state. With this, we are able to detect when stop moving.
 
             // only apply if the carrot is in goal position and also if we are not in a pure spinning behavior v!=0
@@ -231,7 +231,7 @@ namespace cl_move_base_z
             const double C_OFFSET_METERS = 0.05; // 5 cm
             double check = vx * tfpose.getOrigin().x() + vy * tfpose.getOrigin().y() + c + C_OFFSET_METERS;
 
-            ROS_DEBUG_STREAM("[BackwardLocalPlanner] half plane contraint:" << vx << "*" << carrot_point.x << " + " << vy << "*" << carrot_point.y << " + " << c);
+            ROS_DEBUG_STREAM("[BackwardLocalPlanner] half plane constraint:" << vx << "*" << carrot_point.x << " + " << vy << "*" << carrot_point.y << " + " << c);
             ROS_DEBUG_STREAM("[BackwardLocalPlanner] constraint evaluation: " << vx << "*" << tfpose.getOrigin().x() << " + " << vy << "*" << tfpose.getOrigin().y() << " + " << c << " = " << check);
 
             return check < 0;
@@ -263,7 +263,7 @@ namespace cl_move_base_z
 * defaultBackwardCmd()
 ******************************************************************************************************************
 */
-        void BackwardLocalPlanner::defaultBackwardCmd(const tf::Stamped<tf::Pose> &tfpose, double vetta, double gamma, double alpha_error, double betta_error, geometry_msgs::Twist &cmd_vel)
+        void BackwardLocalPlanner::defaultBackwardCmd(const tf::Stamped<tf::Pose> &/*tfpose*/, double vetta, double gamma, double /*alpha_error*/, double /*betta_error*/, geometry_msgs::Twist &cmd_vel)
         {
             cmd_vel.linear.x = vetta;
             cmd_vel.angular.z = gamma;
@@ -273,7 +273,7 @@ namespace cl_move_base_z
 * pureSpinningCmd()
 ******************************************************************************************************************
 */
-        void BackwardLocalPlanner::straightBackwardsAndPureSpinCmd(const tf::Stamped<tf::Pose> &tfpose, double vetta, double gamma, double alpha_error, double betta_error, double rho_error, geometry_msgs::Twist &cmd_vel)
+        void BackwardLocalPlanner::straightBackwardsAndPureSpinCmd(const tf::Stamped<tf::Pose> &/*tfpose*/, double vetta, double gamma, double alpha_error, double betta_error, double rho_error, geometry_msgs::Twist &cmd_vel)
         {
             if (rho_error > linear_mode_rho_error_threshold_) // works in straight motion mode
             {
@@ -358,7 +358,7 @@ namespace cl_move_base_z
 
             // ------ Evaluate the current context ----
             double rho_error, betta_error, alpha_error;
-            
+
 
                 // getting carrot goal information
                 tf::Quaternion q = tfpose.getRotation();
@@ -429,7 +429,7 @@ namespace cl_move_base_z
                         vetta = 0;
                     }
 
-                    //clasical control to reach a goal backwards
+                    //classical control to reach a goal backwards
                     this->defaultBackwardCmd(tfpose, vetta, gamma, alpha_error, betta_error, cmd_vel);
                 }
 
@@ -479,7 +479,7 @@ namespace cl_move_base_z
                         cmd_vel.linear.x = 0;
                     }
                 }
-        
+
 
             // ---------------------- TRAJECTORY PREDICTION AND COLLISION AVOIDANCE ---------------------
             //cmd_vel.linear.x=0;
@@ -499,7 +499,7 @@ namespace cl_move_base_z
             // check plan rejection
             bool acceptedLocalTrajectoryFreeOfObstacles = true;
 
-            unsigned int mx, my;
+            uint32_t mx, my;
 
             if (this->enable_obstacle_checking_)
             {
@@ -522,7 +522,7 @@ namespace cl_move_base_z
                         }
 
                         costmap2d->worldToMap(p[0], p[1], mx, my);
-                        unsigned int cost = costmap2d->getCost(mx, my);
+                        /*uint64_t cost =*/ costmap2d->getCost(mx, my);
 
                         // ROS_DEBUG("[BackwardLocalPlanner] checking cost pt %d [%lf, %lf] cell[%d,%d] = %d", i, p[0], p[1], mx, my, cost);
                         // ROS_DEBUG_STREAM("[BackwardLocalPlanner] cost: " << cost);
@@ -587,7 +587,7 @@ namespace cl_move_base_z
 * reconfigCB()
 ******************************************************************************************************************
 */
-        void BackwardLocalPlanner::reconfigCB(::backward_local_planner::BackwardLocalPlannerConfig &config, uint32_t level)
+        void BackwardLocalPlanner::reconfigCB(::backward_local_planner::BackwardLocalPlannerConfig &config, uint32_t /*level*/)
         {
             ROS_INFO("[BackwardLocalPlanner] reconfigure Request");
             k_alpha_ = config.k_alpha;
@@ -638,20 +638,20 @@ namespace cl_move_base_z
             // initial state check
             computeCurrentEuclideanAndAngularErrorsToCarrotGoal(tfpose, lineardisterr, angleerr);
 
-            int closestIndex = -1;
-            double minpointdist = std::numeric_limits<double>::max();
+            // int closestIndex = -1;
+            // double minpointdist = std::numeric_limits<double>::max();
 
-            // lets set the carrot-goal in the corret place with this loop
+            // lets set the carrot-goal in the correct place with this loop
             while (currentCarrotPoseIndex_ < backwardsPlanPath_.size() && !inCarrotRange)
             {
                 computeCurrentEuclideanAndAngularErrorsToCarrotGoal(tfpose, lineardisterr, angleerr);
 
-                ROS_DEBUG("[BackwardLocalPlanner] Finding initial carrot goal i=%d - error to carrot, linear = %lf (%lf), angular : %lf (%lf)", currentCarrotPoseIndex_, lineardisterr, carrot_distance_, angleerr, carrot_angular_distance_);
+                ROS_DEBUG("[BackwardLocalPlanner] Finding initial carrot goal i=%ld - error to carrot, linear = %lf (%lf), angular : %lf (%lf)", currentCarrotPoseIndex_, lineardisterr, carrot_distance_, angleerr, carrot_angular_distance_);
 
                 // current path point is inside the carrot distance range, goal carrot tries to escape!
                 if (lineardisterr < carrot_distance_ && angleerr < carrot_angular_distance_)
                 {
-                    ROS_DEBUG("[BackwardLocalPlanner] Finding initial carrot goal i=%d - in carrot Range", currentCarrotPoseIndex_);
+                    ROS_DEBUG("[BackwardLocalPlanner] Finding initial carrot goal i=%ld - in carrot Range", currentCarrotPoseIndex_);
                     inCarrotRange = true;
                     // we are inside the goal range
                 }
@@ -666,7 +666,7 @@ namespace cl_move_base_z
                 }
                 else
                 {
-                    ROS_DEBUG("[BackwardLocalPlanner] Finding initial carrot goal i=%d - carrot out of range, searching coincidence...", currentCarrotPoseIndex_);
+                    ROS_DEBUG("[BackwardLocalPlanner] Finding initial carrot goal i=%ld - carrot out of range, searching coincidence...", currentCarrotPoseIndex_);
                 }
 
                 currentCarrotPoseIndex_++;
@@ -694,7 +694,7 @@ namespace cl_move_base_z
             double maxallowedAngularError = 0.45 * this->carrot_angular_distance_; // nyquist
             double maxallowedLinearError = 0.45 * this->carrot_distance_;          // nyquist
 
-            for (int i = 0; i < backwardsPlanPath_.size() - 1; i++)
+            for (uint64_t i = 0; i < backwardsPlanPath_.size() - 1; i++)
             {
                 ROS_DEBUG_STREAM("[BackwardLocalPlanner] resample precise, check: " << i);
                 auto &currpose = backwardsPlanPath_[i];
@@ -792,7 +792,7 @@ namespace cl_move_base_z
             else
             {
                 this->divergenceDetectionUpdate(tfpose);
-                // SANDARD AND PREFERED CASE ON NEW PLAN
+                // SANDARD AND PREFERRED CASE ON NEW PLAN
                 return true;
             }
         }

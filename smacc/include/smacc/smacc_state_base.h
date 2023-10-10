@@ -218,10 +218,10 @@ namespace smacc
 
       srHandler->addInputEvent<EvTopicMessage<CbLidarSensor, OrObstaclePerception>>();
       srHandler->addInputEvent<EvTopicMessage<CbConditionTemperatureSensor, OrTemperatureSensor>>();
-      
+
       TInputEventList* mock;
       state_reactor_initialize_inputEventList(mock,)
-      
+
       srHandler->setOutputEvent<TOutputEvent>();
     }
 */
@@ -418,6 +418,12 @@ namespace smacc
         auto &staticDefinedBehaviors = SmaccStateInfo::staticBehaviorInfo[tindex];
         auto &staticDefinedStateReactors = SmaccStateInfo::stateReactorsInfo[tindex];
         auto &staticDefinedEventGenerators = SmaccStateInfo::eventGeneratorsInfo[tindex];
+
+        for(auto & ortho : this->getStateMachine().getOrthogonals())
+        {
+          ROS_INFO("[%s] Initializing orthogonal: %s", STATE_NAME, demangleSymbol(typeid(*ortho.second).name()).c_str());
+          ortho.second->initState(this);
+        }
 
         for (auto &bhinfo : staticDefinedBehaviors)
         {

@@ -8,6 +8,7 @@
 #include <boost/any.hpp>
 #include <map>
 #include <mutex>
+#include <stack>
 
 #include <smacc/common.h>
 #include <smacc/introspection/introspection.h>
@@ -23,6 +24,7 @@
 #include <smacc/smacc_state.h>
 #include <smacc/smacc_state_reactor.h>
 //#include <smacc/smacc_event_generator.h>
+#include <smacc/callback_counter_semaphore.h>
 
 namespace smacc
 {
@@ -31,7 +33,7 @@ using namespace smacc::introspection;
 
 enum class EventLifeTime{
     ABSOLUTE,
-    CURRENT_STATE /*events are discarded if we are leaving the state it were created. I is used for client behaviors whose liftime is associated to state*/
+    CURRENT_STATE /*events are discarded if we are leaving the state it were created. I is used for client behaviors whose lifetime is associated to state*/
 };
 
 enum class StateMachineInternalAction
@@ -42,6 +44,8 @@ enum class StateMachineInternalAction
     STATE_EXITING,
     TRANSITIONING
 };
+
+
 
 // This class describes the concept of Smacc State Machine in an abastract way.
 // The SmaccStateMachineBase inherits from this state machine and from
@@ -100,8 +104,7 @@ public:
     template <typename TSmaccSignal, typename TMemberFunctionPrototype, typename TSmaccObjectType>
     boost::signals2::connection createSignalConnection(TSmaccSignal &signal, TMemberFunctionPrototype callback, TSmaccObjectType *object);
 
-    // template <typename TSmaccSignal, typename TMemberFunctionPrototype>
-    // boost::signals2::connection createSignalConnection(TSmaccSignal &signal, TMemberFunctionPrototype callback);
+    void disconnectSmaccSignalObject(void *object);
 
     template <typename StateType>
     void notifyOnStateEntryStart(StateType *state);
@@ -121,7 +124,7 @@ public:
     template <typename StateType>
     void notifyOnRuntimeConfigurationFinished(StateType *state);
 
-    inline unsigned long getCurrentStateCounter() const;
+    inline uint64_t getCurrentStateCounter() const;
 
     inline ISmaccState *getCurrentState() const;
 
@@ -169,7 +172,7 @@ protected:
 
     // if it is null, you may be located in a transition. There is a small gap of time where internally
     // this currentState_ is null. This may change in the future.
-    ISmaccState *currentState_;
+    std::vector<ISmaccState*>  currentState_;
 
     std::shared_ptr<SmaccStateInfo> currentStateInfo_;
 
@@ -184,7 +187,7 @@ private:
 
     StateMachineInternalAction stateMachineCurrentAction;
 
-    std::list<boost::signals2::connection> stateCallbackConnections;
+    std::map<void*, std::shared_ptr<CallbackCounterSemaphore>> stateCallbackConnections;
 
     // shared variables
     std::map<std::string, std::pair<std::function<std::string()>, boost::any>> globalData_;
@@ -196,7 +199,7 @@ private:
     // Event to notify to the signaldetection thread that a request has been created...
     SignalDetector *signalDetector_;
 
-    unsigned long stateSeqCounter_;
+    uint64_t stateSeqCounter_;
 
     void lockStateMachine(std::string msg);
 

@@ -33,7 +33,7 @@ void CbMoveCartesianRelative::onEntry()
 
 void CbMoveCartesianRelative::onExit()
 {
-    
+
 }
 
 // keeps the end efector orientation fixed
@@ -42,10 +42,10 @@ void CbMoveCartesianRelative::moveRelativeCartesian(moveit::planning_interface::
 {
   std::vector<geometry_msgs::Pose> waypoints;
 
-  // this one was working fine but the issue is that for relative motions it grows up on ABORT-State-Loop pattern. 
-  // But, we need current pose because maybe setCurrentPose was not set by previos behaviors. The only solution would be 
-  // distinguishing between the executtion error and the planning error with no state change
-  //auto referenceStartPose = movegroupClient->getPoseTarget(); 
+  // this one was working fine but the issue is that for relative motions it grows up on ABORT-State-Loop pattern.
+  // But, we need current pose because maybe setCurrentPose was not set by previous behaviors. The only solution would be
+  // distinguishing between the execution error and the planning error with no state change
+  //auto referenceStartPose = movegroupClient->getPoseTarget();
   auto referenceStartPose = movegroupClient->getCurrentPose();
   movegroupClient->setPoseReferenceFrame(referenceStartPose.header.frame_id);
 
@@ -80,11 +80,11 @@ void CbMoveCartesianRelative::moveRelativeCartesian(moveit::planning_interface::
                                                           0.00,  // jump_threshold
                                                           trajectory);
 
-  moveit::planning_interface::MoveItErrorCode behaviorResult;
+  moveit::core::MoveItErrorCode behaviorResult;
   if (fraction != 1.0 || fraction == -1)
   {
     ROS_WARN_STREAM("[CbMoveCartesianRelative] Cartesian plan joint-continuity percentaje. Execution skipped because not 100% of cartesian motion: " << fraction*100<<"%");
-    behaviorResult = moveit::planning_interface::MoveItErrorCode::PLANNING_FAILED;
+    behaviorResult = moveit::core::MoveItErrorCode::PLANNING_FAILED;
   }
   else
   {
@@ -99,7 +99,7 @@ void CbMoveCartesianRelative::moveRelativeCartesian(moveit::planning_interface::
 
   if (behaviorResult == moveit_msgs::MoveItErrorCodes::SUCCESS)
   {
-    ROS_INFO("[CbMoveCartesianRelative] relative motion execution succedded: fraction %lf.", fraction);
+    ROS_INFO("[CbMoveCartesianRelative] relative motion execution succeeded: fraction %lf.", fraction);
     moveGroupSmaccClient_->postEventMotionExecutionSucceded();
     this->postSuccessEvent();
   }
@@ -109,6 +109,6 @@ void CbMoveCartesianRelative::moveRelativeCartesian(moveit::planning_interface::
     ROS_INFO("[CbMoveCartesianRelative] relative motion execution failed: fraction %lf.", fraction);
     moveGroupSmaccClient_->postEventMotionExecutionFailed();
     this->postFailureEvent();
-  }  
+  }
 }
 }  // namespace cl_move_group_interface

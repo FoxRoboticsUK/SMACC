@@ -36,7 +36,7 @@ namespace cl_move_group_interface
   {
     auto state = moveGroupInterface.getCurrentState();
     auto vnames = state->getVariableNames();
-    
+
     std::stringstream ss;
 
     for(auto& tgj: targetJoints)
@@ -67,7 +67,7 @@ namespace cl_move_group_interface
     {
       moveGroupInterface.setJointValueTarget(jointValueTarget_);
       //moveGroupInterface.setGoalJointTolerance(0.01);
-      success = (moveGroupInterface.plan(computedMotionPlan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+      success = (moveGroupInterface.plan(computedMotionPlan) == moveit::core::MoveItErrorCode::SUCCESS);
       ROS_INFO_NAMED("CbMoveJoints", "Success Visualizing plan 1 (pose goal) %s", success ? "" : "FAILED");
     }
 
@@ -76,10 +76,10 @@ namespace cl_move_group_interface
       auto executionResult = moveGroupInterface.execute(computedMotionPlan);
 
       auto statestr = currentJointStatesToString(moveGroupInterface, jointValueTarget_);
-      
+
       if (executionResult == moveit_msgs::MoveItErrorCodes::SUCCESS)
       {
-        ROS_INFO_STREAM("[" << this->getName() << "] motion execution succedded. Throwing success event. " << std::endl
+        ROS_INFO_STREAM("[" << this->getName() << "] motion execution succeeded. Throwing success event. " << std::endl
                                                                                               << statestr);
         movegroupClient_->postEventMotionExecutionSucceded();
         this->postSuccessEvent();

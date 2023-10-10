@@ -1,0 +1,24 @@
+name: Doxygen
+
+on:
+  push:
+    branches: [noetic-devel]
+
+jobs:
+  doxygen:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: mattnotmitt/doxygen-action@v1
+        with:
+          doxyfile-path: 'smacc_ci/Doxyfile'
+
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTION_DEPLOY_KEY }}
+          external_repository:  robosoft-ai/smacc_doxygen
+          publish_branch: gh-pages
+          publish_dir: docs/
+          destination_dir: noetic
+          commit_message: ${{ github.event.head_commit.message }}

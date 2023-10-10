@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.8)
 project(sm_ridgeback_barrel_search_1)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -11,7 +11,7 @@ find_package(catkin REQUIRED smacc roscpp move_base_z_client_plugin cv_bridge)
 
 ## System dependencies are found with CMake's conventions
 find_package(OpenCV REQUIRED COMPONENTS )
-  
+
 ## Generate messages in the 'msg' folder
 # add_message_files(
 #   FILES

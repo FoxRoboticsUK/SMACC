@@ -176,7 +176,7 @@ void ForwardLocalPlanner::publishGoalMarker(double x, double y, double phi)
     marker.type = visualization_msgs::Marker::ARROW;
     marker.action = visualization_msgs::Marker::ADD;
     marker.pose.orientation.w = 1;
-    
+
     marker.scale.x = 0.1;
     marker.scale.y = 0.3;
     marker.scale.z = 0.1;
@@ -261,7 +261,7 @@ void clamp(geometry_msgs::Twist &cmd_vel, double max_linear_x_speed_, double max
 bool ForwardLocalPlanner::computeVelocityCommands(geometry_msgs::Twist &cmd_vel)
 {
     goalReached_ = false;
-    ROS_DEBUG("[ForwardLocalPlanner] ----- COMUTE VELOCITY COMMAND LOCAL PLANNER ---");
+    ROS_DEBUG("[ForwardLocalPlanner] ----- COMPUTE VELOCITY COMMAND LOCAL PLANNER ---");
 
     tf::Stamped<tf::Pose> tfpose = optionalRobotPose(costmapRos_);
 
@@ -430,7 +430,7 @@ bool ForwardLocalPlanner::computeVelocityCommands(geometry_msgs::Twist &cmd_vel)
     // check plan rejection
     bool aceptedplan = true;
 
-    unsigned int mx, my;
+    uint32_t mx, my;
 
     int i = 0;
     // ROS_INFO_STREAM("lplanner goal: " << finalgoalpose.pose.position);
@@ -447,7 +447,7 @@ bool ForwardLocalPlanner::computeVelocityCommands(geometry_msgs::Twist &cmd_vel)
         }
 
         costmap2d->worldToMap(p[0], p[1], mx, my);
-        unsigned int cost = costmap2d->getCost(mx, my);
+        uint64_t cost = costmap2d->getCost(mx, my);
 
         // ROS_INFO("checking cost pt %d [%lf, %lf] cell[%d,%d] = %d", i, p[0], p[1], mx, my, cost);
         // ROS_INFO_STREAM("cost: " << cost);
