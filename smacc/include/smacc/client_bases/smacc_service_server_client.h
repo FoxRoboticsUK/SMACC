@@ -27,17 +27,16 @@ namespace smacc
 
       virtual ~SmaccServiceServerClient() { server_.shutdown(); }
 
-      smacc::SmaccSignal<bool(TServiceRequest &, std::shared_ptr<TServiceResponse>)>
-          onServiceRequestReceived_;
+  smacc::SmaccSignal<void(TServiceRequest&, std::shared_ptr<TServiceResponse>)>
+      onServiceRequestReceived_;
 
-      template <typename T>
-      boost::signals2::connection onServiceRequestReceived(
-          bool (T::*callback)(TServiceRequest &, std::shared_ptr<TServiceResponse>),
-          T *object)
-      {
-        return this->getStateMachine()->createSignalConnection(
-            onServiceRequestReceived_, callback, object);
-      }
+  template <typename T>
+  boost::signals2::connection onServiceRequestReceived(
+      void (T::*callback)(TServiceRequest&, std::shared_ptr<TServiceResponse>),
+      T* object) {
+    return this->getStateMachine()->createSignalConnection(
+        onServiceRequestReceived_, callback, object);
+  }
 
       virtual void initialize() override
       {
@@ -63,24 +62,16 @@ namespace smacc
     protected:
       ros::NodeHandle nh_;
 
-    private:
-      bool serviceCallback(TServiceRequest &req, TServiceResponse &res)
-      {
-        std::shared_ptr<TServiceResponse> response{new TServiceResponse};
-        auto ret_val = onServiceRequestReceived_(req, response);
-        if (!ret_val) // Check if response is empty
-        {
-          ROS_WARN(
-              "No return value received from service call. Are you returning a "
-              "value?");
-          return false;
-        }
-        res = *response;
-        return true;
-        // return *ret_val;
-      }
-      ros::ServiceServer server_;
-      bool initialized_;
-    };
-  } // namespace client_bases
-} // namespace smacc
+ private:
+  bool serviceCallback(TServiceRequest& req, TServiceResponse& res)
+  {
+    std::shared_ptr<TServiceResponse> response{new TServiceResponse};
+    onServiceRequestReceived_(req, response);
+    res = *response;
+    return true;
+  }
+  ros::ServiceServer server_;
+  bool initialized_;
+};
+}  // namespace client_bases
+}  // namespace smacc
