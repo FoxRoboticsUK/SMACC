@@ -60,7 +60,9 @@ namespace smacc
           ROS_DEBUG_STREAM("Adding updatable client: " << demangleType(typeid(updatableClient)));
           this->updatableClients_.push_back(updatableClient);
         }
-
+      }
+    }
+  }
 /**
  ******************************************************************************************************************
  * findUpdatableClientBehaviors()
